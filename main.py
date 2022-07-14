@@ -21,8 +21,8 @@ def main(config_path: str):
     executor = ParallelExecutor(**config.executor.kwargs)
 
     transcribers = {
-        Vendor.AWS: (True, AwsTranscriber(**config.aws.kwargs)),
-        Vendor.ClovaNest: (False, ClovaNestTranscriber(**{**config.clova_nest.kwargs, **config.aws.kwargs}))
+        Vendor.AWS: (False, AwsTranscriber(**config.aws.kwargs)),
+        Vendor.ClovaNest: (True, ClovaNestTranscriber(**{**config.clova_nest.kwargs, **config.aws.kwargs}))
     }
 
     logging.info('Starting Insight-ASR broker')
