@@ -15,11 +15,12 @@ logger = logging.getLogger(__name__)
 
 
 class ClovaNestTranscriber(BaseTranscriber):
-    def __init__(self, invoke_url: str, secret_key: str, access_key: str, secret_access_key: str, region: str, bucket: str):
+    def __init__(self, invoke_url: str, secret_key: str, callback: str, access_key: str, secret_access_key: str, region: str, bucket: str):
         self.__invoke_url = invoke_url
         self.__secret_key = secret_key
         self.__aws_bucket = bucket
         self.__aws_client = boto3.client('s3', aws_access_key_id=access_key, aws_secret_access_key=secret_access_key, region_name=region)
+        self.__callback_url = callback
 
     def req_upload(self, file, completion, callback=None, userdata=None, forbiddens=None, boostings=None, wordAlignment=True, fullText=True, diarization=None):
         request_body = {
@@ -52,7 +53,23 @@ class ClovaNestTranscriber(BaseTranscriber):
         try:
             logging.info(f'Started to transcribe. [ClovaNest] Src={src}')
             with open(uri, 'rb', transport_params={'client': self.__aws_client}) as f:
-                result = self.req_upload(f, 'sync').json()
+                kwargs = {'completion': 'sync'}
+                use_webhook = not not self.__callback_url
+                if use_webhook:
+                    kwargs.update({'completion': 'async', 'callback': self.__callback_url})
+
+                result = self.req_upload(f, **kwargs).json()
+
+                # 웹훅을 사용한다면, 토큰을 반환
+                if use_webhook:
+                    token = result.get('token')
+                    if token:
+                        logging.info(f'Transcriber does not wait for response [ClovaNest] Src={src}, Token={token}')
+                        return token
+                    logging.error(f'Failed to transcribe in async mode. [ClovaNest] Src={src}')
+                    return None
+
+                # 동기 통신을 사용한다면 반환값을 그대로 사용한다.
                 words = []
                 for segment in result.get('segments', []):
                     for word in segment.get('words', []):
