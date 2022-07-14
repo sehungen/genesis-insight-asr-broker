@@ -1,0 +1,27 @@
+aws:
+  access_key:
+  secret_access_key:
+  region:
+  bucket:
+  timeout: 180
+
+clova_nest:
+  invoke_url:
+  secret_key:
+  callback:
+
+logger:
+  filename: logs/asr-borker.log
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  level: INFO
+
+executor:
+  max_request: 300
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  db: 1
+
+cache:
+  dirpath: ./cache
