@@ -23,6 +23,7 @@ class AwsConfig(EnvVarMixin, YamlMixin, KwargsMixin):
 class ClovaNestConfig(EnvVarMixin, YamlMixin, KwargsMixin):
     invoke_url: str
     secret_key: str
+    callback: str
 
 
 class RedisConfig(EnvVarMixin, YamlMixin, KwargsMixin):
@@ -63,3 +64,13 @@ class MainConfig(EnvVarMixin, YamlMixin):
     executor: ExecutorConfig
     logger: LoggerConfig
 
+
+class WebHookConfig(EnvVarMixin, YamlMixin, KwargsMixin):
+    host: str
+    port: int
+
+
+class WebHookMainConfig(EnvVarMixin, YamlMixin):
+    webhook: WebHookConfig
+    redis: RedisConfig
+    logger: LoggerConfig
