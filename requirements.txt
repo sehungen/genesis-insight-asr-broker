@@ -1,0 +1,12 @@
+redis
+python-redis-lock
+boto3
+requests
+smart-open
+fastapi
+uvicorn
+pyyaml
+orjson
+boto3
+requests
+click
