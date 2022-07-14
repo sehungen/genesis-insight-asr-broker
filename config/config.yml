@@ -11,7 +11,7 @@ clova_nest:
   callback:
 
 logger:
-  filename: logs/asr-borker.log
+  filename: logs/asr-broker.log
   format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
   level: INFO
 
